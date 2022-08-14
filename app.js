@@ -2,7 +2,7 @@ const path = require('path');
 const express = require('express');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
-const { engine } = require('express-handlebars');
+const { engine, create } = require('express-handlebars');
 const passport = require('passport');
 
 const session = require('express-session');
@@ -26,7 +26,13 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-app.engine('.hbs', engine({ defaultLayout: 'main', extname: '.hbs' }));
+// Handlebars Setup
+const { formatDate } = require('./helpers/hbs');
+
+app.engine(
+  '.hbs',
+  engine({ helpers: { formatDate }, defaultLayout: 'main', extname: '.hbs' })
+);
 app.set('view engine', '.hbs');
 
 // Sessions
