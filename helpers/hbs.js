@@ -28,4 +28,7 @@ module.exports = {
       return '';
     }
   },
+  select: function (selected, option) {
+    return selected == option ? 'selected="selected"' : '';
+  },
 };
