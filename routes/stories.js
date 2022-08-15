@@ -38,6 +38,25 @@ router.get('/', ensureAuth, async (req, res) => {
   }
 });
 
+// Show single story
+// GET /stories/:id
+router.get('/:id', ensureAuth, async (req, res) => {
+  try {
+    const story = await Story.findById(req.params.id).populate('user').lean();
+
+    if (!story) {
+      res.render('error/404');
+    }
+
+    res.render('stories/show', {
+      story,
+    });
+  } catch (error) {
+    console.error(error);
+    res.render('error/404');
+  }
+});
+
 // Show edit page
 // GET /stories/edit/:id
 router.get('/edit/:id', ensureAuth, async (req, res) => {
