@@ -2,7 +2,7 @@ const path = require('path');
 const express = require('express');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
-const { engine, create } = require('express-handlebars');
+const { engine } = require('express-handlebars');
 const passport = require('passport');
 
 const session = require('express-session');
@@ -27,12 +27,12 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // Handlebars Setup
-const { formatDate, truncate, stripTags } = require('./helpers/hbs');
+const { formatDate, truncate, stripTags, editIcon } = require('./helpers/hbs');
 
 app.engine(
   '.hbs',
   engine({
-    helpers: { formatDate, truncate, stripTags },
+    helpers: { formatDate, truncate, stripTags, editIcon },
     defaultLayout: 'main',
     extname: '.hbs',
   })
@@ -52,6 +52,12 @@ app.use(
 // Setup Passport
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Set global variable for user
+app.use(function (req, res, next) {
+  res.locals.user = req.user || null;
+  next();
+});
 
 // Static folder
 app.use(express.static(path.join(__dirname, 'public')));
